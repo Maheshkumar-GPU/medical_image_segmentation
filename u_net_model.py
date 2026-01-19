@@ -1,6 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras.layers import(Conv2D,MaxPooling2D,Convolution2DTranspose,Input,concatenate )
 from tensorflow.keras.models import Model
+from sklearn.model_selection import train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
 
 # convolutional block
 def conv_block(input_tensor, num_filters):
@@ -39,3 +42,30 @@ def build_model(input_shape = (128,128,3)):
     return model
 model = build_model()
 model.summary()
+
+# train validation split
+from preprocess import images,masks
+x_train = images
+x_val = images
+y_train = masks
+y_val = masks
+print(x_train.shape,y_train.shape)
+print(x_val.shape,y_val.shape)
+
+# compile model
+model.compile(optimizer='adam',loss='binary_crossentropy',metrics=['accuracy'])
+
+# train the model
+history = model.fit(x_train, y_train,validation_data=(x_val,y_val),epochs=5,batch_size=4)
+
+# final prediction
+idx = 0
+sample_image = x_val[idx]
+sample_mask = masks[idx]
+sample_image_input = np.expand_dims(sample_image,axis=0)
+
+prd_mask = model.predict(sample_image_input)
+prd_mask = prd_mask[0]
+prd_mask = (prd_mask>0.5).astype("uint8")
+print(prd_mask.shape)
+
