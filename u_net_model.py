@@ -4,6 +4,7 @@ from tensorflow.keras.models import Model
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 # convolutional block
 def conv_block(input_tensor, num_filters):
@@ -68,4 +69,28 @@ prd_mask = model.predict(sample_image_input)
 prd_mask = prd_mask[0]
 prd_mask = (prd_mask>0.5).astype("uint8")
 print(prd_mask.shape)
+print(sample_mask.shape)
+print(sample_image.shape)
+print("length of x val ",len(x_val))
+
+# visualize
+plt.figure(figsize=(12,4))
+
+plt.subplot(1,3,1)
+plt.imshow(sample_image)
+plt.title("Input Image")
+plt.axis("off")
+
+plt.subplot(1,3,2)
+plt.imshow(sample_mask.squeeze(), cmap="gray")
+plt.title("Ground Truth Mask")
+plt.axis("off")
+
+plt.subplot(1,3,3)
+plt.imshow(prd_mask.squeeze(), cmap="gray")
+plt.title("Predicted Mask")
+plt.axis("off")
+
+plt.show()
+
 
